@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Threat Analysis</title>
+    <!-- Professional Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="page-container">
+        <header class="main-header">
+            <div class="header-content">
+                <div class="logo-area">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="shield-icon">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <h1>Email Threat Analysis Tool</h1>
+                </div>
+                <nav class="nav-links">
+                    <a href="{{ url_for('index') if request.endpoint != 'index' else '#' }}" class="active">Scanner</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="content-wrapper">
+            <div class="intro-section">
+                <h2>Analyze Suspicious Emails</h2>
+                <p>Paste the raw text of an email below. This system uses an Isolation Forest algorithm to detect
+                    structural metadata anomalies associated with spam and phishing attempts.</p>
+            </div>
+
+            <div class="card scanner-card">
+                <form action="{{ url_for('analyze') }}" method="POST" id="scanForm">
+                    <div class="form-group">
+                        <label for="emailInput">Email Content</label>
+                        <textarea name="emailInput" id="emailInput" rows="10"
+                            placeholder="Paste email subject and body here..." required></textarea>
+                        <small class="help-text">The system evaluates structural metadata (links, HTML, specific
+                            keywords) rather than reading semantic context.</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span>Scan Content</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <footer class="main-footer">
+            <p>&copy; 2026 Cybersecurity Undergraduate Project. Powered by Isolation Forest.</p>
+        </footer>
+    </div>
+
+    <!-- Minimal JS just to show loading state during page transition -->
+    <script>
+        document.getElementById('scanForm').addEventListener('submit', function () {
+            var btn = document.getElementById('submitBtn');
+            btn.innerHTML = 'Scanning...';
+            btn.classList.add('loading');
+
+            // Prevent double submission
+            setTimeout(function () {
+                btn.disabled = true;
+            }, 10);
+        });
+    </script>
+</body>
+
+</html>
