@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Result - Threat Detector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="page-container">
+        <header class="main-header">
+            <div class="header-content">
+                <div class="logo-area">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="shield-icon">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <h1>Email Threat Analysis Tool</h1>
+                </div>
+                <nav class="nav-links">
+                    <a href="{{ url_for('index') }}" class="active">Scanner</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="content-wrapper">
+            <div class="action-bar">
+                <a href="{{ url_for('index') }}" class="btn btn-outline">&larr; Scan Another Email</a>
+            </div>
+
+            <div class="result-dashboard">
+                <div
+                    class="card status-card {% if status == 'Threat' %}status-danger{% else %}status-success{% endif %}">
+                    <div class="status-header">
+                        <h2>Analysis Complete</h2>
+                    </div>
+                    <div class="status-body">
+                        <div class="verdict">
+                            <span class="label">Verdict:</span>
+                            <span class="value">{{ status }}</span>
+                        </div>
+                        <p class="status-description">
+                            {% if status == 'Threat' %}
+                            The Isolation Forest model detected severe structural anomalies in this email. High
+                            probability of Spam or Phishing.
+                            {% else %}
+                            This email matches the standard structural patterns of normal traffic. No immediate
+                            anomalies detected.
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="details-grid">
+                    <div class="card metrics-card">
+                        <h3>Model Metrics</h3>
+                        <div class="metric-item">
+                            <span class="metric-label">Anomaly Score</span>
+                            <span class="metric-value">{{ "%.3f"|format(score) }}</span>
+                            <small class="metric-help">Negative values indicate outliers (threats).</small>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Algorithm</span>
+                            <span class="metric-value">Isolation Forest</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Parameters</span>
+                            <span class="metric-value">Contamination: 0.1</span>
+                        </div>
+                    </div>
+
+                    <div class="card table-card">
+                        <h3>Structural Feature Breakdown</h3>
+                        <p class="table-description">The model evaluated the following metadata extracted from the
+                            input:</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature Name</th>
+                                    <th class="text-right">Extracted Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for feat in features %}
+                                <tr>
+                                    <td>{{ feat.name }}</td>
+                                    <td class="text-right font-mono">{{ feat.value }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card snippet-card">
+                    <h3>Analyzed Content Snippet</h3>
+                    <pre class="snippet-content">{{ email_snippet }}</pre>
+                </div>
+            </div>
+        </main>
+
+        <footer class="main-footer">
+            <p>&copy; 2026 Cybersecurity Undergraduate Project. Powered by Isolation Forest.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
